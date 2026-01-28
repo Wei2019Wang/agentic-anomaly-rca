@@ -1,7 +1,8 @@
-from typing import TypedDict, List, Optional
+from typing import List, Optional
+from pydantic import BaseModel, Field
 
 
-class RCAState(TypedDict):
+class RCAState(BaseModel):
     """
     Global state passed through the LangGraph.
     """
@@ -10,22 +11,22 @@ class RCAState(TypedDict):
     anomaly: str
 
     # Initial observations produced by the observer agent
-    observations: Optional[str]
+    observations: Optional[str] = None
 
     # Candidate root-cause hypotheses with priors
-    hypotheses: Optional[List["Hypothesis"]]
+    hypotheses: Optional[List["Hypothesis"]] = None
 
     # Evidence collected for each hypothesis
-    evidence: Optional[List["Evidence"]]
+    evidence: Optional[List["Evidence"]] = None
 
     # Final confidence score after critique (0–1)
-    confidence: Optional[float]
-
+    confidence: Optional[float] = None
+    report: Optional[str] = None
     # Number of retries performed by the graph
-    retries: int
+    retries: int = 0
 
 
-class Hypothesis(TypedDict):
+class Hypothesis(BaseModel):
     """
     Candidate explanation for an anomaly.
     """
@@ -34,10 +35,10 @@ class Hypothesis(TypedDict):
     cause: str
 
     # Prior belief before evidence is collected (0–1)
-    prior: float
+    prior: float = Field(ge=0.0, le=1.0)
 
 
-class Evidence(TypedDict):
+class Evidence(BaseModel):
     """
     Evidence supporting or refuting a hypothesis.
     """
@@ -49,4 +50,4 @@ class Evidence(TypedDict):
     signal: str
 
     # Strength of support or refutation (0–1)
-    strength: float
+    strength: float = Field(ge=0.0, le=1.0)

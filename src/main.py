@@ -1,8 +1,17 @@
 # src/main.py
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
 
 from graphs.rca_graph import build_rca_graph
 from utils.schemas import RCAState
+from utils.logging import get_logger
 
+
+# find . -name "__pycache__" -type d -exec rm -r {} +
 
 def create_initial_state(anomaly: str) -> RCAState:
     return {
@@ -21,6 +30,5 @@ if __name__ == "__main__":
     initial_state = create_initial_state("RPM dropped 6% WoW")
 
     final_state = graph.invoke(initial_state)
-    print(">>> main.py started")
 
     print(final_state)

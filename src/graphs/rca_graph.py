@@ -11,22 +11,24 @@ from langgraph.graph import StateGraph, END
 
 from utils.schemas import RCAState
 from agents.observer import observe_anomaly
+from agents.reporter import generate_report
+
 
 
 def build_rca_graph():
     """
-    Build the minimal RCA LangGraph.
-
-    Flow:
-        START -> observe -> END
+    detect -> report
     """
+
     graph = StateGraph(RCAState)
 
     # Register agent nodes
-    graph.add_node("observe", observe_anomaly)
+    graph.add_node("detect", observe_anomaly)
+    graph.add_node("report", generate_report)
 
     # Define control flow
-    graph.set_entry_point("observe")
-    graph.add_edge("observe", END)
+    graph.set_entry_point("detect")
+    graph.add_edge("detect", "report")
+    graph.add_edge("report", END)
 
     return graph.compile()

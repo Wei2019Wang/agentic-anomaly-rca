@@ -1,11 +1,26 @@
 # src/tools/metrics.py
 
-from typing import List
+from typing import List, Dict
+import random
+
+def get_timeseries(metric: str, days: int = 7, seed: int = 42) -> List[float]:
+    """
+    Return a deterministic synthetic time series for a metric.
+
+    """
+    random.seed(seed)
+    based = 100.0
+    return [based - i * random.uniform(0.5, 1.5) for i in range(days)]
 
 
-def get_metric_timeseries(metric: str, days: int = 7) -> List[float]:
+def get_top_movers(seed: int = 42) -> Dict[str, float]:
     """
-    Return fake metric values for the past N days.
-    Deterministic stub for development.
+    Return deterministic synthetic top movers (category -> % change).
     """
-    return [100.0, 98.5, 97.2, 95.0, 94.3, 94.0, 93.8]
+
+    random.seed(seed)
+    return {
+        "Finance": -0.12,
+        "Travel": -0.08,
+        "Retail": 0.02,
+    }

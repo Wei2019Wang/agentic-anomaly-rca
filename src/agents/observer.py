@@ -1,18 +1,25 @@
 # src/agents/observer.py
 
 from utils.schemas import RCAState
-from tools.metrics import get_metric_timeseries
+from utils.logging import get_logger
+from tools.metrics import get_timeseries, get_top_movers
+
+
+logger = get_logger(__name__)
 
 
 def observe_anomaly(state: RCAState) -> RCAState:
     """
-    Observe the anomaly and produce initial observations.
+    Observe anomaly using deterministic metric tools.
     """
+    series = get_timeseries(metric="RPM", days=7, seed=42)
+    movers = get_top_movers(seed=42)
 
-    anomaly = state["anomaly"]
+    state.observations =(
+        f"RPM last 7 days: {series}."
+        f"Top movers: {movers}."
+    )
 
-    # Fake observation logic for now
-    series = get_metric_timeseries("RPM")
-    state["observations"] = f"RPM last 7 days: {series}"
+    logger.info(f"Observed anomaly with tools: {state.anomaly}")
 
     return state
