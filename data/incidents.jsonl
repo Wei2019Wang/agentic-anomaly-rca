@@ -1,0 +1,29 @@
+{"incident_id":"INC_001","summary":"RPM dropped sharply during winter storm affecting Finance traffic in Midwest","root_cause":"Weather","dimensions":["geo","vertical"],"resolution":"Traffic normalized after storm passed"}
+{"incident_id":"INC_002","summary":"Severe rain reduced advertiser demand across multiple states","root_cause":"Weather","dimensions":["geo"],"resolution":"Recovered after weather cleared"}
+{"incident_id":"INC_003","summary":"Hurricane impacted ad delivery and impressions","root_cause":"Weather","dimensions":["geo"],"resolution":"Gradual recovery post storm"}
+{"incident_id":"INC_004","summary":"Snowstorm reduced traffic in retail category","root_cause":"Weather","dimensions":["geo","vertical"],"resolution":"Traffic rebounded"}
+{"incident_id":"INC_005","summary":"Heatwave reduced advertiser performance and spend","root_cause":"Weather","dimensions":["geo"],"resolution":"Spend returned after heatwave"}
+
+{"incident_id":"INC_006","summary":"Top advertisers paused spend after monthly budget exhaustion","root_cause":"AdvertiserPullback","dimensions":["advertiser"],"resolution":"Spend resumed after budget reset"}
+{"incident_id":"INC_007","summary":"Large advertiser reduced bids due to ROI concerns","root_cause":"AdvertiserPullback","dimensions":["advertiser"],"resolution":"Bids restored after optimization"}
+{"incident_id":"INC_008","summary":"Multiple advertisers pulled back spend simultaneously","root_cause":"AdvertiserPullback","dimensions":["advertiser"],"resolution":"Spend gradually returned"}
+{"incident_id":"INC_009","summary":"Advertiser paused spend after policy update","root_cause":"AdvertiserPullback","dimensions":["advertiser"],"resolution":"Spend resumed"}
+{"incident_id":"INC_010","summary":"End-of-quarter budget exhaustion caused spend drop","root_cause":"AdvertiserPullback","dimensions":["advertiser"],"resolution":"Budget reset fixed issue"}
+
+{"incident_id":"INC_011","summary":"Ranking experiment rollout reduced click-through rate","root_cause":"ExperimentChange","dimensions":["experiment"],"resolution":"Experiment rolled back"}
+{"incident_id":"INC_012","summary":"Auction experiment negatively impacted RPM","root_cause":"ExperimentChange","dimensions":["experiment"],"resolution":"Rollback restored metrics"}
+{"incident_id":"INC_013","summary":"New bidding logic experiment reduced win rate","root_cause":"ExperimentChange","dimensions":["experiment"],"resolution":"Disabled experiment"}
+{"incident_id":"INC_014","summary":"Experiment bug impacted conversion tracking","root_cause":"ExperimentChange","dimensions":["experiment"],"resolution":"Bug fixed"}
+{"incident_id":"INC_015","summary":"Experiment configuration error caused metric drop","root_cause":"ExperimentChange","dimensions":["experiment"],"resolution":"Config corrected"}
+
+{"incident_id":"INC_016","summary":"Increased latency in ad serving pipeline reduced fill rate","root_cause":"InfraLatency","dimensions":["system"],"resolution":"Latency issue fixed"}
+{"incident_id":"INC_017","summary":"Backend timeout caused partial ad request failures","root_cause":"InfraLatency","dimensions":["system"],"resolution":"Service restarted"}
+{"incident_id":"INC_018","summary":"Cache miss spike caused response time degradation","root_cause":"InfraLatency","dimensions":["system"],"resolution":"Cache issue resolved"}
+{"incident_id":"INC_019","summary":"Service overload increased auction latency","root_cause":"InfraLatency","dimensions":["system"],"resolution":"Capacity added"}
+{"incident_id":"INC_020","summary":"Network issue increased request latency","root_cause":"InfraLatency","dimensions":["system"],"resolution":"Network stabilized"}
+
+{"incident_id":"INC_021","summary":"Delayed ETL job caused stale reporting data","root_cause":"DataPipelineIssue","dimensions":["pipeline"],"resolution":"Pipeline rerun fixed data"}
+{"incident_id":"INC_022","summary":"Upstream data feed lag caused metric discrepancy","root_cause":"DataPipelineIssue","dimensions":["pipeline"],"resolution":"Feed stabilized"}
+{"incident_id":"INC_023","summary":"Aggregation job failure caused missing metrics","root_cause":"DataPipelineIssue","dimensions":["pipeline"],"resolution":"Job reprocessed"}
+{"incident_id":"INC_024","summary":"Backfill delay caused temporary metric drop","root_cause":"DataPipelineIssue","dimensions":["pipeline"],"resolution":"Backfill completed"}
+{"incident_id":"INC_025","summary":"Schema change caused downstream data mismatch","root_cause":"DataPipelineIssue","dimensions":["pipeline"],"resolution":"Schema updated"}
