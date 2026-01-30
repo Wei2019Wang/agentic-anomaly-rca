@@ -1,4 +1,6 @@
 from rca.schemas import RCAExplanation, RCAReport
+from incident_memory.retrieve import retrieve_similar_incidents
+from rca.priors import adjust_prior_with_memory, initialize_prior
 
 
 class RCAAgent:
@@ -6,6 +8,16 @@ class RCAAgent:
         self.available_dims = available_dims
     
     def explain(self, alert_id: str, anomalies: list[int]) -> RCAReport:
+        retrieved_incidents = retrieve_similar_incidents(
+            query=f"Alert {alert_id} anomaly detected",
+            top_k=5,
+        )
+
+        prior = initialize_prior()
+        prior = adjust_prior_with_memory(prior, retrieved_incidents)
+
+        print("Memory-adjusted priors:", prior)
+
         explanations = []
 
         for anomaly_id in anomalies:
