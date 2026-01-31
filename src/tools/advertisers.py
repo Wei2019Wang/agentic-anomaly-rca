@@ -73,3 +73,17 @@ def detect_campaign_changes(
         - Correlate changes with metric anomalies
     """
     pass
+
+# src/tools/advertisers.py
+
+def get_spend_changes(advertiser_id: str | None = None):
+    """
+    Mock advertiser spend change lookup.
+    """
+    return {
+        "advertiser_id": advertiser_id or "ADV_456",
+        "change_type": "budget_reduction",
+        "metric": "spend",
+        "delta_pct": -12.3,
+        "reason": "monthly budget cap reached",
+    }

@@ -84,3 +84,20 @@ def correlate_weather_with_metrics(
         - Identify significant correlations
     """
     pass
+
+
+
+
+# src/tools/weather.py
+
+def get_events(region: str | None = None):
+    """
+    Mock weather event lookup.
+    """
+    return {
+        "region": region or "US",
+        "event_type": "winter_storm",
+        "severity": "high",
+        "duration_days": 3,
+        "impact": "reduced advertiser demand",
+    }
