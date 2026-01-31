@@ -13,6 +13,7 @@ from utils.schemas import RCAState
 from agents.observer import observe_anomaly
 from agents.reporter import generate_report
 from rca.hypothesizer import generate_hypotheses
+from rca.planner import build_evidence_plan
 
 
 def build_rca_graph():
@@ -24,17 +25,24 @@ def build_rca_graph():
 
     # Register agent nodes
     graph.add_node("detect", observe_anomaly)
+    graph.add_node("hypothesizer", hypothesizer_node)
+    graph.add_node("planner",planner_node)
     graph.add_node("report", generate_report)
-    graph.add_node("hypothesizer", generate_hypotheses)
 
     # Define control flow
     graph.set_entry_point("detect")
     graph.add_edge("detect", "hypothesizer")
-    graph.add_edge("hypothesizer", "report")
+    graph.add_edge("hypothesizer", "planner")
+    graph.add_edge("planner", "report")
     graph.add_edge("report", END)
     
     return graph.compile()
 
+
 def hypothesizer_node(state):
-    hypotheses = generate_hypotheses(state.priors)
+    hypotheses = generate_hypotheses(state.priors or {})
     return {"hypotheses": hypotheses}
+
+def planner_node(state):
+    plan = build_evidence_plan(state.hypotheses or [])
+    return {"plan": plan}

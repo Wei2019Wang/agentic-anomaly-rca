@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Any
 from pydantic import BaseModel, Field   
 
 class RCAExplanation(BaseModel):
@@ -18,4 +18,9 @@ class Hypothesis(BaseModel):
     prior: float = Field(ge=0.0, le=1.0)
     required_evidence: List[str]
     score: float = Field(ge=0.0, le=1.0)
+
+class ToolInvocation(BaseModel):
+    tool_name: str
+    args: Dict[str, Any]
+
     
