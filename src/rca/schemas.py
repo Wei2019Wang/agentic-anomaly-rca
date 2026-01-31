@@ -1,5 +1,5 @@
 from typing import List
-from pydantic import BaseModel
+from pydantic import BaseModel, Field   
 
 class RCAExplanation(BaseModel):
     anomaly_id: int
@@ -11,4 +11,11 @@ class RCAExplanation(BaseModel):
 class RCAReport(BaseModel):
     alert_id: str
     explanations: List[RCAExplanation]
+    
+
+class Hypothesis(BaseModel):
+    cause: str
+    prior: float = Field(ge=0.0, le=1.0)
+    required_evidence: List[str]
+    score: float = Field(ge=0.0, le=1.0)
     
