@@ -8,6 +8,7 @@ venv/
 # Python cache
 __pycache__/
 *.py[cod]
+*.pyc
 
 # Test / coverage artifacts
 .pytest_cache/

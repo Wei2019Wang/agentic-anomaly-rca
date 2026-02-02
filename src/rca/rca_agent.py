@@ -1,4 +1,4 @@
-from rca.schemas import RCAExplanation, RCAReport
+from utils.schemas import RCAExplanation, RCAReport
 from incident_memory.retrieve import retrieve_similar_incidents
 from rca.priors import adjust_prior_with_memory, initialize_prior
 

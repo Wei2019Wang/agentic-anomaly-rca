@@ -1,5 +1,5 @@
 from typing import List
-from rca.schemas import Hypothesis
+from utils.schemas import Hypothesis
 
 
 def generate_hypotheses(

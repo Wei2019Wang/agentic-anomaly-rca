@@ -1,60 +1,78 @@
-from typing import List, Optional, Dict
-from pydantic import BaseModel, Field
+from typing import Dict, List, Optional, Any
+from pydantic import BaseModel
 
+
+# -------------------------
+# Evidence
+# -------------------------
+
+class Evidence(BaseModel):
+    source: str                 # tool name, e.g. "weather.get_events"
+    output: Any                 # raw tool output
+    citation: str               # human-readable reference
+    success: bool = True
+    error: Optional[str] = None
+
+
+# -------------------------
+# Hypothesis
+# -------------------------
+
+class Hypothesis(BaseModel):
+    cause: str
+    prior: float
+    score: float
+    required_evidence: List[str]
+
+    # Day 13 addition
+    supporting_evidence: List[Evidence] = []
+
+
+class ToolInvocation(BaseModel):
+    tool_name: str
+    args: Dict[str, Any]
+
+
+# -------------------------
+# RCA State (LangGraph State)
+# -------------------------
 
 class RCAState(BaseModel):
-    """
-    Global state passed through the LangGraph.
-    """
-
-    # Raw anomaly description (input)
+    # Input / trigger
     anomaly: str
 
-    # Initial observations produced by the observer agent
+    # Observation phase
     observations: Optional[str] = None
 
-    # Prior probabilities for hypotheses (dict mapping cause -> prior probability)
+    # Memory / belief
     priors: Optional[Dict[str, float]] = None
 
-    # Candidate root-cause hypotheses with priors
-    hypotheses: Optional[List["Hypothesis"]] = None
+    # Reasoning
+    hypotheses: Optional[List[Hypothesis]] = None
+    plan: Optional[List[Dict]] = None
 
-    # Evidence collection plan (List of ToolInvocation from rca.schemas)
-    plan: Optional[List] = None
+    # Acting
+    evidence: Optional[List[Evidence]] = None
 
-    # Evidence collected for each hypothesis
-    evidence: Optional[List["Evidence"]] = None
-
-    # Final confidence score after critique (0–1)
-    confidence: Optional[float] = None
-    
+    # Output
     report: Optional[str] = None
-    # Number of retries performed by the graph
+    confidence: Optional[float] = None
+
+    # Control
     retries: int = 0
 
 
-class Hypothesis(BaseModel):
-    """
-    Candidate explanation for an anomaly.
-    """
+# -------------------------
+# RCA Report (external API)
+# -------------------------
 
-    # Human-readable cause (e.g., "Demand pullback")
-    cause: str
+class RCAExplanation(BaseModel):
+    anomaly_id: int
+    dimensions: List[str]
+    explanation: str
+    confidence: float
 
-    # Prior belief before evidence is collected (0–1)
-    prior: float = Field(ge=0.0, le=1.0)
 
-
-class Evidence(BaseModel):
-    """
-    Evidence supporting or refuting a hypothesis.
-    """
-
-    # Hypothesis this evidence refers to
-    hypothesis: str
-
-    # Description of the signal (metric, log, config)
-    signal: str
-
-    # Strength of support or refutation (0–1)
-    strength: float = Field(ge=0.0, le=1.0)
+class RCAReport(BaseModel):
+    alert_id: str
+    explanations: List[RCAExplanation]

@@ -1,5 +1,5 @@
 from rca.planner import build_evidence_plan
-from rca.schemas import Hypothesis
+from utils.schemas import Hypothesis
 
 
 def test_planner_respects_priority_and_budget():

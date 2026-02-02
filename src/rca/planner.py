@@ -1,5 +1,5 @@
 from typing import List
-from rca.schemas import Hypothesis, ToolInvocation
+from utils.schemas import Hypothesis, ToolInvocation
 
 MAX_TOOL_CALLS = 3
 

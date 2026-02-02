@@ -1,4 +1,4 @@
-from rca.schemas import Hypothesis
+from utils.schemas import Hypothesis
 
 def test_hypothesis_schema_valid():
     h = Hypothesis(
