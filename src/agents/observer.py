@@ -8,18 +8,18 @@ from tools.metrics import get_timeseries, get_top_movers
 logger = get_logger(__name__)
 
 
-def observe_anomaly(state: RCAState) -> RCAState:
+def observe_anomaly(state: RCAState) -> dict:
     """
     Observe anomaly using deterministic metric tools.
     """
-    series = get_timeseries(metric="RPM", days=7, seed=42)
-    movers = get_top_movers(seed=42)
+    series = get_timeseries(metric="RPM", window=7)
+    movers = get_top_movers("RPM")
 
-    state.observations =(
+    observations = (
         f"RPM last 7 days: {series}."
         f"Top movers: {movers}."
     )
 
     logger.info(f"Observed anomaly with tools: {state.anomaly}")
 
-    return state
+    return {"observations": observations}

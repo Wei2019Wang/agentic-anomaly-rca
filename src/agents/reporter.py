@@ -2,16 +2,17 @@
 
 from utils.schemas import RCAState
 
-def generate_report(state: RCAState) -> RCAState:
+def generate_report(state: RCAState) -> dict:
     """
     Generate a simple textual report from observations.
     """
 
-    state.report = (
+    report = (
         f"Anomaly detected: {state.anomaly}. "
         f"Observations: {state.observations}"
     )
 
-    state.confidence = 0.6
-
-    return state
+    return {
+        "report": report,
+        "confidence": 0.6
+    }
