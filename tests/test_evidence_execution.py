@@ -1,4 +1,4 @@
-from rca.executor import execute_plan
+from rca.evidence_executor import execute_plan
 
 
 def test_tool_failure_is_captured():

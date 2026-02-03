@@ -33,6 +33,36 @@ class ToolInvocation(BaseModel):
     args: Dict[str, Any]
 
 
+
+
+# -------------------------
+# RCA Report (external API)
+# -------------------------
+
+class RCAExplanation(BaseModel):
+    anomaly_id: int
+    dimensions: List[str]
+    explanation: str
+    confidence: float
+
+
+class RCAReport(BaseModel):
+    alert_id: str
+    explanations: List[RCAExplanation]
+
+class CriticResult(BaseModel):
+    hypothesis_id: str
+    original_score: float
+    revised_score: float
+    supported: bool
+    reason: str
+
+
+class CriticOutput(BaseModel):
+    results: List[CriticResult]
+    should_retry: bool
+
+
 # -------------------------
 # RCA State (LangGraph State)
 # -------------------------
@@ -54,25 +84,10 @@ class RCAState(BaseModel):
     # Acting
     evidence: Optional[List[Evidence]] = None
 
+    critic: CriticOutput | None = None
     # Output
     report: Optional[str] = None
     confidence: Optional[float] = None
 
     # Control
     retries: int = 0
-
-
-# -------------------------
-# RCA Report (external API)
-# -------------------------
-
-class RCAExplanation(BaseModel):
-    anomaly_id: int
-    dimensions: List[str]
-    explanation: str
-    confidence: float
-
-
-class RCAReport(BaseModel):
-    alert_id: str
-    explanations: List[RCAExplanation]

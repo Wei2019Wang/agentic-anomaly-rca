@@ -15,7 +15,8 @@ from agents.reporter import generate_report
 from rca.hypothesizer import generate_hypotheses
 from rca.planner import build_evidence_plan
 from agents.evidence_agent import evidence_node
-
+from rca.critic import critique_hypotheses
+from rca.evidence_executor import execute_plan
 
 def build_rca_graph():
     """
@@ -30,16 +31,20 @@ def build_rca_graph():
     graph.add_node("planner",planner_node)
     graph.add_node("report", generate_report)
     graph.add_node("evidence", evidence_node)
+    graph.add_node("critic", critic_node)
+    graph.add_node("evidence_executor", evidence_executor_node)
 
 
     # Define control flow
     graph.set_entry_point("detect")
     graph.add_edge("detect", "hypothesizer")
     graph.add_edge("hypothesizer", "planner")
-    graph.add_edge("planner", "evidence")
-    graph.add_edge("evidence", "report")
+    graph.add_edge("planner", "evidence_executor")
+    graph.add_edge("evidence_executor", "critic")
+    graph.add_edge("critic", "report")
     graph.add_edge("report", END)
     
+
     return graph.compile()
 
 
@@ -50,3 +55,21 @@ def hypothesizer_node(state):
 def planner_node(state):
     plan = build_evidence_plan(state.hypotheses or [])
     return {"plan": plan}
+
+def critic_node(state: RCAState):
+    output = critique_hypotheses(
+        hypotheses=state.hypotheses or [],
+        evidence=state.evidence or [],
+    )
+    return {
+        "critic": output,
+        "hypotheses": [
+            h.model_copy(update={"score": r.revised_score})
+            for h, r in zip(state.hypotheses, output.results)
+        ],
+        "should_retry": output.should_retry,
+    }
+
+def evidence_executor_node(state: RCAState):
+    evidence = execute_plan(state.plan or [])
+    return {"evidence": evidence}
