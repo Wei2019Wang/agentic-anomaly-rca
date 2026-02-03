@@ -11,10 +11,10 @@ from langgraph.graph import StateGraph, END
 
 from utils.schemas import RCAState
 from agents.observer import observe_anomaly
-from agents.reporter import generate_report
+from agents.reporter import generate_report, generate_unknown_report
 from rca.hypothesizer import generate_hypotheses
 from rca.planner import build_evidence_plan
-from agents.evidence_agent import evidence_node
+# from agents.evidence_agent import evidence_node
 from rca.critic import critique_hypotheses
 from rca.evidence_executor import execute_plan
 
@@ -29,11 +29,11 @@ def build_rca_graph():
     graph.add_node("detect", observe_anomaly)
     graph.add_node("hypothesizer", hypothesizer_node)
     graph.add_node("planner",planner_node)
-    graph.add_node("report", generate_report)
-    graph.add_node("evidence", evidence_node)
-    graph.add_node("critic", critic_node)
     graph.add_node("evidence_executor", evidence_executor_node)
-
+    graph.add_node("critic", critic_node)
+    graph.add_node("report", generate_report)
+    graph.add_node("unknown", generate_unknown_report)
+    
 
     # Define control flow
     graph.set_entry_point("detect")
@@ -41,8 +41,20 @@ def build_rca_graph():
     graph.add_edge("hypothesizer", "planner")
     graph.add_edge("planner", "evidence_executor")
     graph.add_edge("evidence_executor", "critic")
-    graph.add_edge("critic", "report")
+
+    graph.add_conditional_edges(
+        "critic",
+        route_after_critic,
+        {
+            "retry": "hypothesizer",
+            "unknown": "unknown",
+            "success": "report",
+        }
+    )
+
+
     graph.add_edge("report", END)
+    graph.add_edge("unknown", END)
     
 
     return graph.compile()
@@ -68,8 +80,17 @@ def critic_node(state: RCAState):
             for h, r in zip(state.hypotheses, output.results)
         ],
         "should_retry": output.should_retry,
+        "retries": state.retries + (1 if output.should_retry else 0)
     }
 
 def evidence_executor_node(state: RCAState):
     evidence = execute_plan(state.plan or [])
     return {"evidence": evidence}
+
+def route_after_critic(state: RCAState) -> str:
+    if state.should_retry and state.retries < state.max_retries:
+        return "retry"
+    if state.should_retry and state.retries >= state.max_retries:
+        return "unknown"
+    return "success"
+

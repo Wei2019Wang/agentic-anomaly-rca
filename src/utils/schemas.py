@@ -87,7 +87,12 @@ class RCAState(BaseModel):
     critic: CriticOutput | None = None
     # Output
     report: Optional[str] = None
+
     confidence: Optional[float] = None
 
     # Control
     retries: int = 0
+
+    should_retry: bool = False
+    
+    max_retries: int = 2

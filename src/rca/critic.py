@@ -1,5 +1,5 @@
 from typing import List
-from utils.schemas import Hypothesis, Evidence, CriticResult, CriticOutput
+from .schemas import Hypothesis, Evidence, CriticResult, CriticOutput
 
 
 MIN_ACCEPTABLE_SCORE = 0.5

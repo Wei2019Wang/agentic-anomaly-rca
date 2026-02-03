@@ -16,3 +16,14 @@ def generate_report(state: RCAState) -> dict:
         "report": report,
         "confidence": 0.6
     }
+
+def generate_unknown_report(state: RCAState) -> dict:
+    report = (
+        f"Anomaly detected: {state.anomaly}. "
+        "Root cause could not be determined with sufficient confidence "
+        "after multiple attempts. Marked as UNKNOWN."
+    )
+    return {
+        "report": report,
+        "confidence": 0.0
+    }

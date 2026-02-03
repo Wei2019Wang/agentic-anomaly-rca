@@ -8,7 +8,7 @@ It ensures the quality and rigor of the investigation process.
 from typing import Any, Dict, List, Optional
 
 
-def critique_hypothesis(
+def critique_hypotheses(
     hypothesis: Dict[str, Any],
     evidence: List[Dict[str, Any]],
     context: Optional[Dict[str, Any]] = None
