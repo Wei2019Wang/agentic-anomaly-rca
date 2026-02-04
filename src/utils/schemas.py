@@ -68,6 +68,8 @@ class CriticOutput(BaseModel):
 # -------------------------
 
 class RCAState(BaseModel):
+    # Identity (Required)
+    alert_id: str
     # Input / trigger
     anomaly: str
 
@@ -79,20 +81,19 @@ class RCAState(BaseModel):
 
     # Reasoning
     hypotheses: Optional[List[Hypothesis]] = None
-    plan: Optional[List[Dict]] = None
+    plan: Optional[List[ToolInvocation]] = None
 
     # Acting
     evidence: Optional[List[Evidence]] = None
 
+    # Verification
     critic: CriticOutput | None = None
+    
     # Output
     report: Optional[str] = None
-
     confidence: Optional[float] = None
 
     # Control
     retries: int = 0
-
     should_retry: bool = False
-    
     max_retries: int = 2

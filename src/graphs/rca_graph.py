@@ -17,6 +17,10 @@ from rca.planner import build_evidence_plan
 # from agents.evidence_agent import evidence_node
 from rca.critic import critique_hypotheses
 from rca.evidence_executor import execute_plan
+from rca.priors import initialize_prior, adjust_prior_with_memory
+from incident_memory.retrieve import retrieve_similar_incidents
+from typing import Dict
+
 
 def build_rca_graph():
     """
@@ -27,6 +31,7 @@ def build_rca_graph():
 
     # Register agent nodes
     graph.add_node("detect", observe_anomaly)
+    graph.add_node("compute_priors", compute_priors_node)
     graph.add_node("hypothesizer", hypothesizer_node)
     graph.add_node("planner",planner_node)
     graph.add_node("evidence_executor", evidence_executor_node)
@@ -37,7 +42,8 @@ def build_rca_graph():
 
     # Define control flow
     graph.set_entry_point("detect")
-    graph.add_edge("detect", "hypothesizer")
+    graph.add_edge("detect", "compute_priors")
+    graph.add_edge("compute_priors", "hypothesizer")
     graph.add_edge("hypothesizer", "planner")
     graph.add_edge("planner", "evidence_executor")
     graph.add_edge("evidence_executor", "critic")
@@ -59,6 +65,24 @@ def build_rca_graph():
 
     return graph.compile()
 
+def compute_priors_node(state: RCAState) -> Dict[str, float]:
+    # start from uniform priors
+    priors = initialize_prior()
+
+    # Retrieve similar incidents from memory
+    retrieved = retrieve_similar_incidents(
+        query = state.anomaly,
+        top_k = 5,
+    )
+
+    # Ajust priors with memory
+    adjusted = adjust_prior_with_memory(
+        prior=priors,
+        retrieved_incidents=retrieved,
+        alpha=0.5,
+    )
+
+    return {"priors": adjusted}
 
 def hypothesizer_node(state):
     hypotheses = generate_hypotheses(state.priors or {})
@@ -66,6 +90,7 @@ def hypothesizer_node(state):
 
 def planner_node(state):
     plan = build_evidence_plan(state.hypotheses or [])
+    print(f"plan: {plan}")
     return {"plan": plan}
 
 def critic_node(state: RCAState):
@@ -85,6 +110,7 @@ def critic_node(state: RCAState):
 
 def evidence_executor_node(state: RCAState):
     evidence = execute_plan(state.plan or [])
+    print(f"evidence: {evidence}")
     return {"evidence": evidence}
 
 def route_after_critic(state: RCAState) -> str:

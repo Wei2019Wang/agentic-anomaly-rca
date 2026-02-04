@@ -4,7 +4,7 @@ from utils.schemas import RCAState
 def test_detect_to_report_flow():
     graph = build_rca_graph()
 
-    state = RCAState(anomaly="RPM dropped")
+    state = RCAState(alert_id="TEST_ALERT_1", anomaly="RPM dropped")
 
     result = graph.invoke(state)
     print(result)

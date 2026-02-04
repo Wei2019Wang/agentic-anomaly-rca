@@ -13,21 +13,22 @@ from utils.logging import get_logger
 
 # find . -name "__pycache__" -type d -exec rm -r {} +
 
-def create_initial_state(anomaly: str) -> RCAState:
-    return {
-        "anomaly": anomaly,
-        "observations": None,
-        "hypotheses": None,
-        "evidence": None,
-        "confidence": None,
-        "retries": 0,
-    }
+def create_initial_state(alert_id: str, anomaly: str) -> RCAState:
+    return RCAState(
+        alert_id=alert_id,
+        anomaly=anomaly,
+        observations=None,
+        hypotheses=None,
+        evidence=None,
+        confidence=None,
+        retries=0,
+    )
 
 
 if __name__ == "__main__":
     graph = build_rca_graph()
 
-    initial_state = create_initial_state("RPM dropped 6% WoW")
+    initial_state = create_initial_state(alert_id="MAIN_ALERT_1", anomaly="RPM dropped 6% WoW")
 
     final_state = graph.invoke(initial_state)
 

@@ -1,5 +1,5 @@
 from typing import List
-from .schemas import Hypothesis, Evidence, CriticResult, CriticOutput
+from utils.schemas import Hypothesis, Evidence, CriticResult, CriticOutput
 
 
 MIN_ACCEPTABLE_SCORE = 0.5
@@ -12,7 +12,8 @@ def critique_hypotheses(
     results: List[CriticResult] = []
 
     evidence_sources = {e.source for e in evidence}
-
+    print(f"evidence_sources: {evidence_sources}")
+    
     for h in hypotheses:
         if h.cause in evidence_sources:
             revised_score = h.score

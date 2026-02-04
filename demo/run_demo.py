@@ -1,6 +1,10 @@
 import argparse
 import json
-from rca.rca_agent import RCAAgent
+
+from graphs.rca_graph import build_rca_graph
+from utils.schemas import RCAState
+
+# python demo/run_demo.py --alert_id ALERT_123
 
 def main():
     parser = argparse.ArgumentParser()
@@ -8,13 +12,34 @@ def main():
     args = parser.parse_args()
 
     # v0 synthetic input
-    anomalies = [2, 7]
-    available_dims = ["country", "device", "supply_source"]
+    
 
-    agent = RCAAgent(available_dims)
-    report = agent.explain(args.alert_id, anomalies)
+    graph = build_rca_graph()
 
-    print(json.dumps(report.model_dump(), indent=2))
+
+    state = RCAState(
+        alert_id=args.alert_id,
+        anomaly="RPM dropped significantly",
+        max_retries=2,
+    )
+
+    final_state = graph.invoke(state)
+
+   # Print final RCA output
+    print(
+        json.dumps(
+            {
+                "alert_id": final_state["alert_id"],
+                "report": final_state["report"],
+                "confidence": final_state["confidence"],
+                "hypotheses": final_state.get("hypotheses") or [],
+                "evidence": final_state.get("evidence") or [],
+            },
+            indent=2,
+            default=str,  # Handle any non-serializable objects
+        )
+    )
+
 
 if __name__ == "__main__":
     main()

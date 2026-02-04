@@ -6,7 +6,7 @@ def generate_hypotheses(
     priors: dict[str, float]
 ) -> List[Hypothesis]:
     hypotheses = []
-
+    print("DEBUG priors:", priors)
     for cause, prior in priors.items():
         hypotheses.append(
             Hypothesis(

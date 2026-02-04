@@ -24,6 +24,7 @@ def retrieve_similar_incidents(
     retriever = index.as_retriever(similarity_top_k=top_k)
     results = retriever.retrieve(query)
 
+    # Each dictionary represents one historical incident that is semantically similar to the query.
     return [
         {"incident_id": r.node.metadata["incident_id"], 
         "summary": r.node.text,

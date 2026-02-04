@@ -1,7 +1,7 @@
 from typing import List
 from utils.schemas import ToolInvocation, Evidence
 from tools import weather, experiments, advertisers, system
-
+from mcp_adapters.tools import MCP_TOOLS
 
 TOOL_REGISTRY = {
     "weather.get_events": weather.get_events,
@@ -25,14 +25,22 @@ def execute_plan(plan: List[ToolInvocation]) -> List[Evidence]:
             args = invocation.args
 
         try:
-            fn = TOOL_REGISTRY[tool_name]
-            output = fn(**args)
+            # 🔹 1. MCP path (preferred if available)
+            if tool_name in MCP_TOOLS:
+                output = MCP_TOOLS[tool_name].invoke(args)
+                citation = "mcp"
+
+            # 🔹 2. Native Python fallback
+            else:
+                fn = TOOL_REGISTRY[tool_name]
+                output = fn(**args)
+                citation = "native"
 
             evidence.append(
                 Evidence(
                     source=tool_name,
                     output=output,
-                    citation=f"{tool_name}({args})",
+                    citation=citation,
                     success=True,
                 )
             )
@@ -42,10 +50,11 @@ def execute_plan(plan: List[ToolInvocation]) -> List[Evidence]:
                 Evidence(
                     source=tool_name,
                     output=str(e),
-                    citation=f"{tool_name}({args})",
+                    citation="error",
                     success=False,
                     error=str(e),
                 )
             )
 
-    return evidence
+    return  evidence
+
